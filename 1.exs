@@ -1,19 +1,5 @@
 defmodule DayOne do
-  #=> find the two entries that sum to `sum`. Expects floats or integers
-  def find_two_entries_summing_to([head | tail], sum) do
-    target = sum - head
-    target_index = Enum.find_index(tail, fn entry -> entry == target end)
-
-    case target_index do
-      x when is_integer(x) -> [head, target]
-      _ -> find_two_entries_summing_to(tail, sum)
-    end
-  end
-
-  def find_two_entries_summing_to([], _) do
-    nil
-  end
-
+  #=> find n entries that sum to `sum`. Expects floats or integers
   def find_n_entries_summing_to([head | tail], n, sum) do
     if n == 2 do
       find_two_entries_summing_to([head | tail], sum)
@@ -30,6 +16,22 @@ defmodule DayOne do
   def find_n_entries_summing_to([], _n, _sum) do
     nil
   end
+
+  #=> find two entries that sum to `sum`. Expects floats or integers
+  def find_two_entries_summing_to([head | tail], sum) do
+    target = sum - head
+    target_index = Enum.find_index(tail, fn entry -> entry == target end)
+
+    case target_index do
+      x when is_integer(x) -> [head, target]
+      _ -> find_two_entries_summing_to(tail, sum)
+    end
+  end
+
+  def find_two_entries_summing_to([], _) do
+    nil
+  end
+
 end
 
 
