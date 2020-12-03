@@ -10,6 +10,11 @@ defmodule ReadInput do
     convert_strings_to_floats(numbers)
   end
 
+  def string_grid(filename) do
+    lines = string_list(filename)
+    convert_strings_to_lists(lines)
+  end
+
   defp convert_strings_to_floats([head | tail]) do
     parse_result = Float.parse(head)
     case parse_result do
@@ -18,8 +23,17 @@ defmodule ReadInput do
     end
   end
 
+
   #=> Function header catches the empty array base case of recursive function
   defp convert_strings_to_floats([]) do
+    []
+  end
+
+  defp convert_strings_to_lists([head|tail]) do
+    [String.graphemes(head) | convert_strings_to_lists(tail)]
+  end
+
+  defp convert_strings_to_lists([]) do
     []
   end
 end
