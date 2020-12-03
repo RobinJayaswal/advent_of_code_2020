@@ -1,7 +1,5 @@
 defmodule DayThree do
   def part_one(grid) do
-    #=> Represent the map as an array of arrays.
-    #=> When the index for inner array goes past length then loop back
     count_trees_with_slope(grid, 3, 1)
   end
 
@@ -52,7 +50,3 @@ IO.inspect values
 input = ReadInput.string_grid(Path.join("inputs", "3.txt"))
 values = DayThree.part_two(input)
 IO.inspect values
-# #=> Part 2
-# input = ReadInput.string_list(Path.join("inputs", "3.txt"))
-# values = DayTwo.part_two(input)
-# IO.inspect values
