@@ -2,7 +2,10 @@ defmodule ReadInput do
   def string_list(filename) do
     {:ok, str} = File.read(filename)
     items = String.split(str, "\n")
-    Enum.filter(items, fn x -> x && x != "" end)
+    case Enum.at(items, (length items) - 1) do
+      "" -> Enum.take(items, (length items) - 1)
+      _ -> items
+    end
   end
 
   def float_list(filename) do
