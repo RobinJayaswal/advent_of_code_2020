@@ -1,10 +1,20 @@
 defmodule ReadInput do
   def string_list(filename) do
-    {:ok, str} = File.read(filename)
-    items = String.split(str, "\n")
-    case Enum.at(items, (length items) - 1) do
-      "" -> Enum.take(items, (length items) - 1)
-      _ -> items
+    str = read_file_without_trailing_newline(filename)
+    String.split(str, "\n")
+  end
+
+  def grouped_string_list(filename, group_divider \\ "\n\n") do
+    str = read_file_without_trailing_newline(filename)
+    groups = create_string_groups(str, group_divider)
+    Enum.map(groups, fn group -> String.split(group, "\n") end)
+  end
+
+  defp create_string_groups(str, group_divider) do
+    groups = String.split(str, group_divider)
+    case Enum.at(groups, (length groups) - 1) do
+      "" -> Enum.take(groups, (length groups) - 1)
+      _ -> groups
     end
   end
 
@@ -38,5 +48,13 @@ defmodule ReadInput do
 
   defp convert_strings_to_lists([]) do
     []
+  end
+
+  defp read_file_without_trailing_newline(filename) do
+    {:ok, str} = File.read(filename)
+    case String.at(str, -1) do
+      "\n" -> String.slice(str, 0..-2)
+      _ -> str
+    end
   end
 end
