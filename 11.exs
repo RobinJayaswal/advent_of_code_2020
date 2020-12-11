@@ -86,14 +86,14 @@ defmodule DayEleven do
 
   def line_of_sight_vis_func(seat_layout, { el, row_index, col_index }) do
     lines_of_sight = [
-      { 0 - 1, 0 - 1 },
-      { 0 - 1, 0 },
-      { 0 - 1, 0 + 1},
-      { 0, 0 - 1},
-      { 0, 0 + 1},
-      { 0 + 1, 0 - 1 },
-      { 0 + 1, 0 },
-      { 0 + 1, 0 + 1 },
+      { -1, - 1 },
+      { -1, 0 },
+      { -1, + 1},
+      { 0, - 1},
+      { 0, + 1},
+      { +1, - 1 },
+      { +1, 0 },
+      { +1, + 1 },
     ]
 
     occupied_in_lines_of_sight = Enum.filter(lines_of_sight, fn { row_delta, col_delta } ->
