@@ -11,8 +11,7 @@ defmodule DayNine do
   end
 
   def find_bad_numbers(numbers, preamble_length) do
-    preamble = Enum.take(numbers, preamble_length)
-    rest = Enum.take(numbers, preamble_length - (length numbers))
+    { preamble, rest } = Enum.split(numbers, preamble_length)
 
     { _, bad_numbers } = Enum.reduce(rest, { preamble, [] }, fn number, { prev_n, bad_numbers } ->
       #=> Check if two (unique) numbers in prev_n sum to number.
