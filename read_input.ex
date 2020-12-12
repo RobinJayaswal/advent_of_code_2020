@@ -23,6 +23,11 @@ defmodule ReadInput do
     convert_strings_to_floats(numbers)
   end
 
+  def int_list(filename) do
+    numbers = string_list(filename)
+    Enum.map(convert_strings_to_floats(numbers), fn x -> round(x) end)
+  end
+
   def string_grid(filename) do
     lines = string_list(filename)
     convert_strings_to_lists(lines)
