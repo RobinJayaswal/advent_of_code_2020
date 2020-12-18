@@ -2,7 +2,7 @@ defmodule DaySixteen do
   def part_one(info) do
     {
       fields,
-      your_ticket,
+      _yt,
       nearby_tickets
     } = parse_info(info)
     invalid_tickets = identify_invalid_tickets(nearby_tickets, fields)
@@ -41,14 +41,6 @@ defmodule DaySixteen do
   end
 
   def determine_field_order(your_ticket, fields, nearby_tickets) do
-    #=> Cant just narrow it down and expect to get to an array of one. There is elimination
-    #=> required too, aka if a column is the only one that could fit a particular column (even if
-    #=> it could fit others) then we know it's that one
-    #=> Maybe makes more sense to map fields to the column they could fit.
-    #=> If a field could only fit one column, then we know it's that one
-    #=> If any fields have one column, then we assign it to that, and delete that
-    #=> column from all other fields. Then we repeat and look for the next field with only
-    #=> one column.
     number_columns = ((length your_ticket) - 1)
     initial_fields_to_potential_columns = Enum.reduce(fields, %{}, fn { name, _ }, map ->
       Map.put(map, name, 0..number_columns)
