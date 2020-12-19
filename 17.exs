@@ -1,3 +1,13 @@
+#=> Grabbed deep flatten module from:
+#=> https://gist.github.com/mareksuscak/acb4de6f72b2e6983c7c22b64bf7ce8a
+defmodule Array do
+  def flatten(list), do: flatten(list, [])
+  def flatten([head | tail], acc) when head == [], do: flatten(tail, acc)
+  def flatten([head | tail], acc) when is_list(head), do: flatten(tail, flatten(head, acc))
+  def flatten([head | tail], acc), do: flatten(tail, acc ++ [head])
+  def flatten([], acc), do: acc
+end
+
 defmodule DaySeventeen do
   def part_one(initial_state) do
     state = [initial_state]
@@ -5,7 +15,10 @@ defmodule DaySeventeen do
     count_active_cubes(final_state)
   end
 
-  def part_two() do
+  def part_two(initial_state) do
+    state = [[initial_state]]
+    final_state = perform_cycles(state, 6)
+    count_active_cubes(final_state)
   end
 
   def perform_cycles(state, cycles) when cycles > 0 do
@@ -18,50 +31,71 @@ defmodule DaySeventeen do
   end
 
   def count_active_cubes(state) do
-    flattened = Enum.flat_map(state, &Enum.flat_map(&1, fn x -> x end))
+    flattened = Array.flatten(state)
     active = Enum.filter(flattened, fn x -> x === "#" end)
     length active
   end
 
+
+
   #=> Represent as an array of arrays of arrays
   def perform_cycle(state) do
-    sample_layer = Enum.at(state, 0)
-    sample_row = Enum.at(sample_layer, 0)
-    zero_layer = Enum.map(1..(length sample_layer), fn _ ->
-      Enum.map(1..(length sample_row), fn _ -> "." end)
-    end)
+    # recursively expand state at each level
+    # sample_layer = Enum.at(state, 0)
+    # sample_row = Enum.at(sample_layer, 0)
+    # zero_layer = Enum.map(1..(length sample_layer), fn _ ->
+    #   Enum.map(1..(length sample_row), fn _ -> "." end)
+    # end)
+    #
+    # expanded_state = Enum.map([zero_layer] ++ state ++ [zero_layer], fn layer ->
+    #   sample_row = Enum.at(layer, 0)
+    #   zero_row = Enum.map(1..(length sample_row), fn _ -> "." end)
+    #   Enum.map([zero_row] ++ layer ++ [zero_row], fn row ->
+    #     ["."] ++ row ++ ["."]
+    #   end)
+    # end)
 
-    expanded_state = Enum.map([zero_layer] ++ state ++ [zero_layer], fn layer ->
-      sample_row = Enum.at(layer, 0)
-      zero_row = Enum.map(1..(length sample_row), fn _ -> "." end)
-      Enum.map([zero_row] ++ layer ++ [zero_row], fn row ->
-        ["."] ++ row ++ ["."]
-      end)
-    end)
+    expanded_state = create_expanded_state(state)
 
     Enum.map(
       Enum.with_index(expanded_state),
-      &update_layer(&1, [], expanded_state)
+      &update_level(&1, [], expanded_state)
     )
   end
+
+  def create_expanded_state(state) when is_list(state) do
+    sample_level = Enum.at(state, 0)
+    inactive_level = create_level_of_inactives(sample_level)
+
+    Enum.map([inactive_level] ++ state ++ [inactive_level], &create_expanded_state(&1))
+  end
+
+  def create_expanded_state(value), do: value
+
+  def create_level_of_inactives(level) when is_list(level) do
+    Enum.map(level, &create_level_of_inactives(&1))
+  end
+
+  def create_level_of_inactives(_level), do: "."
 
   #=> We'll rewrite all of these updates into one single one that's recursive,
   #=> and the case where we reach a non-array is the base case
   #=> Then above, we just need to make perform_cycle dimension agnostic, and
   #=> have part 2 pass in an object with an extra dimension
 
-  def update_layer({ layer, z_index }, other_coordinates, original_state) do
+  def update_level(
+    { level, level_coordinate }, other_coordinates, original_state
+  ) when is_list(level) do
     Enum.map(
-      Enum.with_index(layer),
-      &update_row(&1, [z_index | other_coordinates], original_state)
+      Enum.with_index(level),
+      &update_level(&1, [level_coordinate | other_coordinates], original_state)
     )
   end
 
-  def update_row({ row, y_index }, other_coordinates, original_state) do
-    Enum.map(
-      Enum.with_index(row),
-      &update_value(&1, [y_index | other_coordinates], original_state)
-    )
+  def update_level(
+    { level, level_coordinate }, other_coordinates, original_state
+  ) do
+    update_value({ level, level_coordinate }, other_coordinates, original_state)
   end
 
   def update_value({ value, x_index }, other_coordinates, original_state) do
@@ -153,8 +187,8 @@ IO.inspect values
 values = DaySeventeen.part_one(real_input)
 IO.inspect values
 
-# values = DaySeventeen.part_two(test_input)
-# IO.inspect values
+values = DaySeventeen.part_two(test_input)
+IO.inspect values
 
-# values = DaySeventeen.part_two(real_input)
-# IO.inspect values
+values = DaySeventeen.part_two(real_input)
+IO.inspect values
