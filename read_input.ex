@@ -47,11 +47,11 @@ defmodule ReadInput do
     []
   end
 
-  defp convert_strings_to_lists([head|tail]) do
+  def convert_strings_to_lists([head|tail]) do
     [String.graphemes(head) | convert_strings_to_lists(tail)]
   end
 
-  defp convert_strings_to_lists([]) do
+  def convert_strings_to_lists([]) do
     []
   end
 
